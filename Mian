@@ -1,251 +1,161 @@
-Private Sub abbrechen_Click()
-    Unload Me 'Schließen der aktuellen UserForm
-End Sub
-
-Private Sub anlegen_Click()
-    Dim rng As Range
-    Dim cmnt As Comment
-    Dim i As Integer
-
-    Set rng = Selection ' markierten Zellenbereich abrufen
-
-    Application.ScreenUpdating = False ' Bildschirmaktualisierung deaktivieren für bessere Performance
-
-    For Each cell In rng.Cells ' für jede markierte Zelle
-        If Not cell.Comment Is Nothing Then ' vorhandenen Kommentar löschen, falls vorhanden
-            cell.Comment.Delete
-        End If
-
-        Set cmnt = cell.AddComment ' neuen Kommentar erstellen
-
-        ' Textinhalt aus den 5 TextBoxen in den Kommentar schreiben
-        For i = 1 To 5
-            If i = 1 Then
-                cmnt.Text Text:=Me.Controls("TextBox" & i).Text & " " & Application.UserName & " "
-            Else
-                cmnt.Text Text:=cmnt.Text & vbCrLf & Me.Controls("TextBox" & i).Text
-            End If
-        Next i
-    Next cell
-
-    Application.ScreenUpdating = True ' Bildschirmaktualisierung wieder aktivieren
-End Sub
-
-Private Sub dispoverschicken_Click()
-    Dispo.Show 'Zeige die UserForm an
-End Sub
-
-Private Sub UserForm_Initialize()
-    Dim filePaths() As String
-    Dim filePath As String
-    Dim fileName As String
-    Dim fileDate As Date
-    Dim newestFile As String
-    Dim latestDate As Date
-    Dim i As Integer
-
-    Application.ScreenUpdating = False ' Bildschirmaktualisierung deaktivieren für bessere Performance
-   
-    ' Array mit den Namen der Ordner
-    filePaths = Split("C:/TEST,C:/TEST/1", ",")
-   
-    ' Schleife durch alle Ordner
-    For i = LBound(filePaths) To UBound(filePaths)
-        filePath = filePaths(i) & "\"
-        fileName = Dir(filePath & "*.pdf")
-        
-        Do While fileName <> ""
-            fileDate = FileDateTime(filePath & fileName)
-            If fileDate > latestDate Then
-                newestFile = fileName
-                latestDate = fileDate
-            End If
-            fileName = Dir
-        Loop
-       
-        If newestFile <> "" Then
-            Me.Controls("ListBox" & i + 1).AddItem newestFile
-        Else
-            Me.Controls("ListBox" & i + 1).AddItem "Keine PDF-Dateien gefunden"
-        End If
-       
-        newestFile = ""
-        latestDate = 0
-    Next i
-
-    Application.ScreenUpdating = True ' Bildschirmaktualisierung wieder aktivieren
-End Sub
-
-Private Sub CommandButton1_Click()
-    MsgBox "erstellt durch TEST."
-End Sub
-
-Private Sub dispotool_Click()
-    Unload Me 'Schließt die UserForm
-    Workbooks.Open "DISPO NICHT VERSCHIEBEN"
-End Sub
-
-Private Sub link_Click()
-    Dim selectedText As String
-    selectedText = ActiveCell.Value
-    
-    'Stammordner 1
-    Dim folderPath1 As String
-    folderPath1 = "Pool 2024" 'Stammordner 1, in dem die Unterordner liegen
-    
-    Dim subFolderNames1() As String
-    subFolderNames1 = Split("Monate Komma", ",")
-    
-    'Stammordner 2
-    Dim folderPath2 As String
-    folderPath2 = "05 Dispo" 'Stammordner 2, in dem die Unterordner liegen
-    
-    Dim subFolderNames2() As String
-    subFolderNames2 = Split("BwFPS KZN", ",")
-    
-    Dim fileName As String
-    fileName = selectedText & ".pdf"
-    
-    Dim subFolderPath As String
-    Dim filePath As String
-    Dim i As Integer
-    Dim fileFound As Boolean
-    
-    Application.ScreenUpdating = False ' Bildschirmaktualisierung deaktivieren für bessere Performance
-
-    'Durchsuche Unterordner von Stammordner 1
-    For i = 0 To UBound(subFolderNames1)
-        subFolderPath = folderPath1 & subFolderNames1(i) & "\"
-        filePath = subFolderPath & fileName
-        If Dir(filePath) <> "" Then
-            ActiveCell.Hyperlinks.Add Anchor:=Selection, _
-                Address:=filePath, _
-                ScreenTip:="PDF-Datei öffnen", _
-                TextToDisplay:=selectedText
-            fileFound = True
-            Exit For 'Wenn Datei gefunden wurde, Schleife beenden
-        End If
-    Next i
-    
-    'Durchsuche Unterordner von Stammordner 2, falls Datei noch nicht gefunden wurde
-    If Not fileFound Then
-        For i = 0 To UBound(subFolderNames2)
-            subFolderPath = folderPath2 & subFolderNames2(i) & "\"
-            filePath = subFolderPath & fileName
-            If Dir(filePath) <> "" Then
-                ActiveCell.Hyperlinks.Add Anchor:=Selection, _
-                    Address:=filePath, _
-                    ScreenTip:="PDF-Datei öffnen", _
-                    TextToDisplay:=selectedText
-                fileFound = True
-                Exit For 'Wenn Datei gefunden wurde, Schleife beenden
-            End If
-        Next i
-    End If
-
-    Application.ScreenUpdating = True ' Bildschirmaktualisierung wieder aktivieren
-    
-    If Not fileFound Then
-        MsgBox "Es wurde keine Dispositionsbestätigung unter der Nummer: " & selectedText & " gefunden."
-    End If
-End Sub
-
-Private Sub reset_Click()
-    If Selection.Cells.Count < 1 Then
-        MsgBox "Bitte wählen Sie mindestens eine Zelle aus, um das Kommentar zu löschen.", vbExclamation, "Auswahl erforderlich"
-        Exit Sub
-    End If
-    
-    Application.ScreenUpdating = False ' Bildschirmaktualisierung deaktivieren für bessere Performance
-
-    With Selection
-        .UnMerge
-        .HorizontalAlignment = xlGeneral
-        .VerticalAlignment = xlTop
-        .Interior.Color = RGB(255, 255, 255) ' Hintergrundfarbe auf weiß setzen
-        If Not .Comment Is Nothing Then .Comment.Delete
-    End With
-
-    Selection.Borders.LineStyle = xlContinuous
-    Selection.Borders.Weight = xlThin
-    Selection.ClearComments
-    Selection.ClearContents
-    Selection.Hyperlinks.Delete
-
-    Application.ScreenUpdating = True ' Bildschirmaktualisierung wieder aktivieren
-End Sub
-
 Private Sub eins_Click()
-    If Not TypeName(Selection) = "Range" Then
+    If Not TypeName(Selection) = "Range" Then ' Check if a range of cells is selected
         MsgBox "Bitte wählen Sie eine Zelle oder einen Zellbereich aus.", vbCritical
         Exit Sub
     End If
     
-    Application.ScreenUpdating = False ' Bildschirmaktualisierung deaktivieren für bessere Performance
-
-    With Selection
-        .Merge
-        .HorizontalAlignment = xlCenter
-        .Interior.Color = RGB(91, 155, 213) ' Hintergrundfarbe setzen
+    With Selection ' With block to operate on the selected range
+        .Merge ' Merge the selected cells
+        .HorizontalAlignment = xlCenter ' Center the contents horizontally
+        .Interior.Color = RGB(91, 155, 213) ' Set the background color to red
     End With
-
-    Application.ScreenUpdating = True ' Bildschirmaktualisierung wieder aktivieren
 End Sub
 
 Private Sub org_Change()
     Dim selectedRange As Range
-    Set selectedRange = Selection
-    If Not selectedRange Is Nothing Then
-        Application.ScreenUpdating = False ' Bildschirmaktualisierung deaktivieren für bessere Performance
-
-        For Each cell In selectedRange
-            cell.Value = CStr(org.Value)
-            cell.HorizontalAlignment = xlCenter
-            cell.VerticalAlignment = xlCenter
+    Set selectedRange = Selection ' speichert den ausgewählten Zellbereich in der Variablen selectedRange
+    If Not selectedRange Is Nothing Then ' überprüft, ob ein Zellbereich ausgewählt ist
+        For Each cell In selectedRange ' iteriert durch jede Zelle im ausgewählten Bereich
+            cell.Value = CStr(org.Value) ' Konvertiert den Wert in Text und überschreibt den Zellwert
+            cell.HorizontalAlignment = xlCenter ' Zentriert den Text horizontal
+            cell.VerticalAlignment = xlCenter ' Zentriert den Text vertikal
         Next cell
-
-        Application.ScreenUpdating = True ' Bildschirmaktualisierung wieder aktivieren
     End If
 End Sub
+
+
+
 
 Private Sub zwei_Click()
-    If Not TypeName(Selection) = "Range" Then
+    If Not TypeName(Selection) = "Range" Then ' Check if a range of cells is selected
         MsgBox "Bitte wählen Sie eine Zelle oder einen Zellbereich aus.", vbCritical
         Exit Sub
     End If
     
-    Application.ScreenUpdating = False ' Bildschirmaktualisierung deaktivieren für bessere Performance
-
-    With Selection
-        .Merge
-        .HorizontalAlignment = xlCenter
-        .Interior.Color = RGB(255, 217, 102) ' Hintergrundfarbe setzen
+    With Selection ' With block to operate on the selected range
+        .Merge ' Merge the selected cells
+        .HorizontalAlignment = xlCenter ' Center the contents horizontally
+        .Interior.Color = RGB(255, 217, 102) ' Set the background color to red
     End With
-
-    Application.ScreenUpdating = True ' Bildschirmaktualisierung wieder aktivieren
 End Sub
-
 Private Sub drei_Click()
-    If Not TypeName(Selection) = "Range" Then
+    If Not TypeName(Selection) = "Range" Then ' Check if a range of cells is selected
         MsgBox "Bitte wählen Sie eine Zelle oder einen Zellbereich aus.", vbCritical
         Exit Sub
     End If
     
-    Application.ScreenUpdating = False ' Bildschirmaktualisierung deaktivieren für bessere Performance
-
-    With Selection
-        .Merge
-        .HorizontalAlignment = xlCenter
-        .Interior.Color = RGB(84, 130, 53) ' Hintergrundfarbe setzen
+    With Selection ' With block to operate on the selected range
+        .Merge ' Merge the selected cells
+        .HorizontalAlignment = xlCenter ' Center the contents horizontally
+        .Interior.Color = RGB(84, 130, 53) ' Set the background color to red
     End With
-
-    Application.ScreenUpdating = True ' Bildschirmaktualisierung wieder aktivieren
+End Sub
+Private Sub vier_Click()
+    If Not TypeName(Selection) = "Range" Then ' Check if a range of cells is selected
+        MsgBox "Bitte wählen Sie eine Zelle oder einen Zellbereich aus.", vbCritical
+        Exit Sub
+    End If
+    
+    With Selection ' With block to operate on the selected range
+        .Merge ' Merge the selected cells
+        .HorizontalAlignment = xlCenter ' Center the contents horizontally
+        .Interior.Color = RGB(246, 76, 8) ' Set the background color to red
+    End With
+End Sub
+Private Sub fuenf_Click()
+    If Not TypeName(Selection) = "Range" Then ' Check if a range of cells is selected
+        MsgBox "Bitte wählen Sie eine Zelle oder einen Zellbereich aus.", vbCritical
+        Exit Sub
+    End If
+    
+    With Selection ' With block to operate on the selected range
+        .Merge ' Merge the selected cells
+        .HorizontalAlignment = xlCenter ' Center the contents horizontally
+        .Interior.Color = RGB(255, 0, 0) ' Set the background color to red
+    End With
+End Sub
+Private Sub sieben_Click()
+    If Not TypeName(Selection) = "Range" Then ' Check if a range of cells is selected
+        MsgBox "Bitte wählen Sie eine Zelle oder einen Zellbereich aus.", vbCritical
+        Exit Sub
+    End If
+    
+    With Selection ' With block to operate on the selected range
+        .Merge ' Merge the selected cells
+        .HorizontalAlignment = xlCenter ' Center the contents horizontally
+        .Interior.Color = RGB(13, 255, 19) ' Set the background color to red
+    End With
+End Sub
+Private Sub acht_Click()
+    If Not TypeName(Selection) = "Range" Then ' Check if a range of cells is selected
+        MsgBox "Bitte wählen Sie eine Zelle oder einen Zellbereich aus.", vbCritical
+        Exit Sub
+    End If
+    
+    With Selection ' With block to operate on the selected range
+        .Merge ' Merge the selected cells
+        .HorizontalAlignment = xlCenter ' Center the contents horizontally
+        .Interior.Color = RGB(135, 109, 61) ' Set the background color to red
+    End With
+End Sub
+Private Sub neun_Click()
+    If Not TypeName(Selection) = "Range" Then ' Check if a range of cells is selected
+        MsgBox "Bitte wählen Sie eine Zelle oder einen Zellbereich aus.", vbCritical
+        Exit Sub
+    End If
+    
+    With Selection ' With block to operate on the selected range
+        .Merge ' Merge the selected cells
+        .HorizontalAlignment = xlCenter ' Center the contents horizontally
+        .Interior.Color = RGB(166, 166, 166) ' Set the background color to red
+    End With
+End Sub
+Private Sub logbtl163_Click()
+    If Not TypeName(Selection) = "Range" Then ' Check if a range of cells is selected
+        MsgBox "Bitte wählen Sie eine Zelle oder einen Zellbereich aus.", vbCritical
+        Exit Sub
+    End If
+    
+    With Selection ' With block to operate on the selected range
+        .Merge ' Merge the selected cells
+        .HorizontalAlignment = xlCenter ' Center the contents horizontally
+        .Interior.Color = RGB(255, 133, 133) ' Set the background color to red
+    End With
+End Sub
+Private Sub sonstiges_Click()
+    If Not TypeName(Selection) = "Range" Then ' Check if a range of cells is selected
+        MsgBox "Bitte wählen Sie eine Zelle oder einen Zellbereich aus.", vbCritical
+        Exit Sub
+    End If
+    
+    With Selection ' With block to operate on the selected range
+        .Merge ' Merge the selected cells
+        .HorizontalAlignment = xlCenter ' Center the contents horizontally
+        .Interior.Color = RGB(112, 48, 160) ' Set the background color to red
+    End With
+End Sub
+Private Sub werkstatt_Click()
+    If Not TypeName(Selection) = "Range" Then ' Check if a range of cells is selected
+        MsgBox "Bitte wählen Sie eine Zelle oder einen Zellbereich aus.", vbCritical
+        Exit Sub
+    End If
+    
+    With Selection ' With block to operate on the selected range
+        .Merge ' Merge the selected cells
+        .HorizontalAlignment = xlCenter ' Center the contents horizontally
+        .Interior.Color = RGB(0, 0, 0) ' Set the background color to red
+    End With
 End Sub
 
-Private Sub vier_Click()
-    If Not TypeName(Selection) = "Range" Then
-        MsgBox "Bitte wählen Sie eine Zelle oder einen Zellbereich aus.", vbCritical
-        Exit Sub
-    End If
+Private Sub UserForm_Activate()
+    With Me
+        .StartUpPosition = 0
+        .Left = Application.Left + (0.5 * Application.Width) - (0.5 * .Width)
+        .Top = Application.Top + (0.5 * Application.Height) - (0.5 * .Height)
+    End With
     
-    Application.ScreenUpdating
+    If ActiveSheet.ProtectContents Then
+        MsgBox "Die UserForm ist bei aktiviertem Blattschutz deaktiviert.", vbInformation
+        Unload Me ' Schließt die UserForm
+    End If
+End Sub
