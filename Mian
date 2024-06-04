@@ -1,1 +1,89 @@
+Private Sub eins_Click()
+    HandleCellSelection RGB(91, 155, 213)
+End Sub
 
+Private Sub zwei_Click()
+    HandleCellSelection RGB(255, 217, 102)
+End Sub
+
+Private Sub drei_Click()
+    HandleCellSelection RGB(84, 130, 53)
+End Sub
+
+Private Sub vier_Click()
+    HandleCellSelection RGB(246, 76, 8)
+End Sub
+
+Private Sub fuenf_Click()
+    HandleCellSelection RGB(255, 0, 0)
+End Sub
+
+Private Sub sieben_Click()
+    HandleCellSelection RGB(13, 255, 19)
+End Sub
+
+Private Sub acht_Click()
+    HandleCellSelection RGB(135, 109, 61)
+End Sub
+
+Private Sub neun_Click()
+    HandleCellSelection RGB(166, 166, 166)
+End Sub
+
+Private Sub logbtl163_Click()
+    HandleCellSelection RGB(255, 133, 133)
+End Sub
+
+Private Sub sonstiges_Click()
+    HandleCellSelection RGB(112, 48, 160)
+End Sub
+
+Private Sub werkstatt_Click()
+    HandleCellSelection RGB(0, 0, 0)
+End Sub
+
+Private Sub HandleCellSelection(color As Long)
+    If Not TypeName(Selection) = "Range" Then
+        MsgBox "Bitte wählen Sie eine Zelle oder einen Zellbereich aus.", vbCritical
+        Exit Sub
+    End If
+
+    Application.ScreenUpdating = False
+
+    With Selection
+        .Merge
+        .HorizontalAlignment = xlCenter
+        .Interior.Color = color
+    End With
+
+    Application.ScreenUpdating = True
+End Sub
+
+Private Sub org_Change()
+    Dim selectedRange As Range
+    Set selectedRange = Selection
+    If Not selectedRange Is Nothing Then
+        Application.ScreenUpdating = False
+
+        For Each cell In selectedRange
+            cell.Value = CStr(org.Value)
+            cell.HorizontalAlignment = xlCenter
+            cell.VerticalAlignment = xlCenter
+        Next cell
+
+        Application.ScreenUpdating = True
+    End If
+End Sub
+
+Private Sub UserForm_Activate()
+    With Me
+        .StartUpPosition = 0
+        .Left = Application.Left + (0.5 * Application.Width) - (0.5 * .Width)
+        .Top = Application.Top + (0.5 * Application.Height) - (0.5 * .Height)
+    End With
+    
+    If ActiveSheet.ProtectContents Then
+        MsgBox "Die UserForm ist bei aktiviertem Blattschutz deaktiviert.", vbInformation
+        Unload Me ' Schließt die UserForm
+    End If
+End Sub
