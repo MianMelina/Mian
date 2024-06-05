@@ -1,1 +1,59 @@
+Private Sub UserForm_Initialize()
+    Dim baseFolderPath As String
+    Dim subFolderNames() As String
+    Dim subFolderName As String
+    Dim fso As Object
+    Dim subFolderPath As String
+    Dim file As Object
+    Dim fileDate As Date
+    Dim newestFile As String
+    Dim latestDate As Date
+    Dim i As Integer
+    
+    ' Initialisierung
+    baseFolderPath = "C:\TEST\1234567\Test\01 Fahrzeugverwaltung\Pool 2024\" ' Basisordner angeben
+    subFolderNames = Split("01 Januar,02 Februar,03 März,04 April,05 Mai,06 Juni,07 Juli,08 August,09 September,10 Oktober,11 November,12 Dezember", ",")
+    
+    ' Bildschirmaktualisierung deaktivieren für bessere Performance
+    Application.ScreenUpdating = False
 
+    ' Initialisiere die FileSystemObject
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    
+    ' Schleife durch alle angegebenen Unterordnernamen
+    For i = LBound(subFolderNames) To UBound(subFolderNames)
+        subFolderName = subFolderNames(i)
+        subFolderPath = baseFolderPath & subFolderName
+        
+        ' Überprüfe, ob der Unterordner existiert
+        If fso.FolderExists(subFolderPath) Then
+            latestDate = 0
+            
+            ' Schleife durch alle Dateien im Unterordner
+            For Each file In fso.GetFolder(subFolderPath).Files
+                If LCase(fso.GetExtensionName(file.Name)) = "pdf" Then
+                    fileDate = file.DateLastModified
+                    If fileDate > latestDate Then
+                        newestFile = file.Name
+                        latestDate = fileDate
+                    End If
+                End If
+            Next file
+            
+            ' Füge das neueste PDF zur ListBox hinzu
+            If latestDate <> 0 Then
+                Me.Controls("ListBox" & i + 1).AddItem newestFile
+            Else
+                Me.Controls("ListBox" & i + 1).AddItem "Keine PDF-Dateien gefunden"
+            End If
+        Else
+            Me.Controls("ListBox" & i + 1).AddItem "Ordner nicht gefunden"
+        End If
+    Next i
+
+    ' Bildschirmaktualisierung wieder aktivieren
+    Application.ScreenUpdating = True
+
+    ' Aufräumen
+    Set fso = Nothing
+End Sub
