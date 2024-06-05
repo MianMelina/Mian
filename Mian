@@ -69,3 +69,14 @@ Private Function GetNewestPdfFileUsingDir(folderPath As String) As String
 ErrorHandler:
     GetNewestPdfFileUsingDir = ""
 End Function
+
+
+
+
+Private Sub UserForm_Initialize()
+    ' Initialisierung der UserForm ohne Verzögerung
+    Me.Caption = "PDF Sucher - Initialisierung"
+    
+    ' Timer starten
+    Application.OnTime Now + TimeValue("00:00:01"), "StartPdfSearch"
+End Sub
