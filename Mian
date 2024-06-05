@@ -1,1 +1,32 @@
+Private Sub UserForm_Initialize()
+    ' Initialisierung der UserForm ohne Verzögerung
+    Me.Caption = "PDF Sucher - Initialisierung"
+    
+    ' Status des ToggleButtons laden
+    LoadToggleButtonState
+    
+    ' Überprüfen, ob der ToggleButton aktiviert ist
+    If Not Me.ToggleButton1.Value Then
+        ' Timer starten, um die PDF-Suche nach dem Öffnen zu beginnen
+        Application.OnTime Now + TimeValue("00:00:01"), "StartPdfSearch"
+    End If
+End Sub
 
+Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
+    ' Status des ToggleButtons speichern, wenn die UserForm geschlossen wird
+    SaveToggleButtonState
+End Sub
+
+Private Sub ToggleButton1_Click()
+    ' Wenn der ToggleButton geändert wird, den Status speichern
+    SaveToggleButtonState
+    
+    ' Überprüfen, ob der ToggleButton aktiviert oder deaktiviert wurde
+    If Me.ToggleButton1.Value Then
+        ' PDF-Suche deaktiviert
+        MsgBox "PDF-Suche deaktiviert."
+    Else
+        ' PDF-Suche aktiviert
+        StartPdfSearch
+    End If
+End Sub
