@@ -1,1 +1,40 @@
+Private Sub UserForm_Initialize()
+    Dim filePaths() As String
+    Dim filePath As String
+    Dim fileName As String
+    Dim fileDate As Date
+    Dim newestFile As String
+    Dim latestDate As Date
+    Dim i As Integer
 
+    Application.ScreenUpdating = False ' Bildschirmaktualisierung deaktivieren für bessere Performance
+   
+    ' Array mit den Namen der Ordner
+    filePaths = Split("C:\TEST\1234567\Test\01 Fahrzeugverwaltung\Pool 2024\01 Januar,C:\TEST\1234567\Test\01 Fahrzeugverwaltung\Pool 2024\01 Januar,C:\TEST\1234567\Test\01 Fahrzeugverwaltung\Pool 2024\01 Januar,C:\TEST\1234567\Test\01 Fahrzeugverwaltung\Pool 2024\01 Januar,C:\TEST\1234567\Test\01 Fahrzeugverwaltung\Pool 2024\01 Januar,C:\TEST\1234567\Test\01 Fahrzeugverwaltung\Pool 2024\01 Januar,C:\TEST\1234567\Test\01 Fahrzeugverwaltung\Pool 2024\01 Januar,C:\TEST\1234567\Test\01 Fahrzeugverwaltung\Pool 2024\01 Januar,C:\TEST\1234567\Test\01 Fahrzeugverwaltung\Pool 2024\01 Januar,C:\TEST\1234567\Test\01 Fahrzeugverwaltung\Pool 2024\01 Januar,C:\TEST\1234567\Test\01 Fahrzeugverwaltung\Pool 2024\01 Januar,C:\TEST\1234567\Test\01 Fahrzeugverwaltung\Pool 2024\01 Januar", ",")
+   
+    ' Schleife durch alle Ordner
+    For i = LBound(filePaths) To UBound(filePaths)
+        filePath = filePaths(i) & "\"
+        fileName = Dir(filePath & "*.pdf")
+        
+        Do While fileName <> ""
+            fileDate = FileDateTime(filePath & fileName)
+            If fileDate > latestDate Then
+                newestFile = fileName
+                latestDate = fileDate
+            End If
+            fileName = Dir
+        Loop
+       
+        If newestFile <> "" Then
+            Me.Controls("ListBox" & i + 1).AddItem newestFile
+        Else
+            Me.Controls("ListBox" & i + 1).AddItem "Keine PDF-Dateien gefunden"
+        End If
+       
+        newestFile = ""
+        latestDate = 0
+    Next i
+
+    Application.ScreenUpdating = True ' Bildschirmaktualisierung wieder aktivieren
+End Sub
