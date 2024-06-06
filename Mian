@@ -1,1 +1,20 @@
-
+Private Sub uebernehmen_Click()
+    'Textinhalt aus der Userform in die Zellen schreiben
+    Worksheets("Dispotool").Range("C30").Value = Me.KfzArt1.Value
+    Worksheets("Dispotool").Range("C31").Value = Me.KfzArt2.Value
+    Worksheets("Dispotool").Range("C32").Value = Me.KfzArt3.Value
+    Worksheets("Dispotool").Range("C33").Value = Me.KfzArt4.Value
+    Worksheets("Dispotool").Range("C34").Value = Me.KfzArt5.Value
+    Worksheets("Dispotool").Range("C35").Value = Me.KfzArt6.Value
+    Worksheets("Dispotool").Range("P30").Value = Me.Kennzeichen1.Value
+    Worksheets("Dispotool").Range("P31").Value = Me.Kennzeichen2.Value
+    Worksheets("Dispotool").Range("P32").Value = Me.Kennzeichen3.Value
+    Worksheets("Dispotool").Range("P33").Value = Me.Kennzeichen4.Value
+    Worksheets("Dispotool").Range("P34").Value = Me.Kennzeichen5.Value
+    Worksheets("Dispotool").Range("P35").Value = Me.Kennzeichen6.Value
+    Worksheets("Dispotool").Range("G23").Value = Me.Datum1.Value
+    Worksheets("Dispotool").Range("R23").Value = Me.Datum2.Value
+    Worksheets("Dispotool").Range("L23").Value = Me.Uhrzeit1.Value
+    Worksheets("Dispotool").Range("W23").Value = Me.Uhrzeit2.Value
+    Worksheets("Dispotool").Range("Dispo").Value = Me.lfdnr.Value
+End Sub
