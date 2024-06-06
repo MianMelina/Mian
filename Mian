@@ -1,1 +1,29 @@
+Private Sub CommandButton1_Click()
+    Dim i As Integer
+    Dim j As Integer
+    Dim dataList(1 To 12) As String
+    
+    ' Speichern Sie den Inhalt der ListBoxen in einem Array
+    For i = 1 To 12
+        For j = 0 To Me.Controls("ListBox" & i).ListCount - 1
+            dataList(i) = dataList(i) & Me.Controls("ListBox" & i).List(j) & vbCrLf
+        Next j
+    Next i
+    
+    ' Daten an die UserForm "Dispo" übergeben und anzeigen
+    Dispo.Show
+    Dispo.FillListBoxes dataList
+End Sub
+
+Public Sub FillListBoxes(dataList() As String)
+    Dim i As Integer
+    Dim listItem() As String
+    
+    ' Füllen Sie die ListBoxen mit den übergebenen Daten
+    For i = 1 To 12
+        listItem = Split(dataList(i), vbCrLf)
+        Me.Controls("ListBox" & i).Clear
+        Me.Controls("ListBox" & i).List = listItem
+    Next i
+End Sub
 
