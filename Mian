@@ -1,1 +1,132 @@
+Module Modul1
 
+' Gemeinsame Funktionen und Prozeduren
+
+Public Sub StartPdfSearch(formName As String)
+    Dim baseFolderPath As String
+    Dim subFolderNames() As String
+    Dim subFolderName As String
+    Dim subFolderPath As String
+    Dim newestFile As String
+    Dim I As Integer
+    Dim listBoxItems() As String
+    Dim listBoxName As String
+    
+    ' Initialisierung
+    baseFolderPath = "\Pool 2024\" ' Basisordner angeben
+    subFolderNames = Split("01 Januar,02 Februar,03 März,04 April,05 Mai,06 Juni,07 Juli,08 August,09 September,10 Oktober,11 November,12 Dezember", ",")
+    
+    ' Initialisiere das Array für die ListBox-Einträge
+    ReDim listBoxItems(LBound(subFolderNames) To UBound(subFolderNames))
+    
+    ' Schleife durch alle angegebenen Unterordnernamen
+    For I = LBound(subFolderNames) To UBound(subFolderNames)
+        subFolderName = subFolderNames(I)
+        subFolderPath = baseFolderPath & subFolderName
+        
+        ' Holen des neuesten PDF-Dateinamens
+        newestFile = GetNewestPdfFileUsingDir(subFolderPath)
+        
+        ' Speichern des Dateinamens oder der Fehlermeldung im Array
+        If newestFile <> "" Then
+            listBoxItems(I) = newestFile
+        Else
+            listBoxItems(I) = "Keine PDF-Dateien gefunden oder Ordner nicht gefunden"
+        End If
+        
+        ' Erstellen des ListBox-Namens
+        listBoxName = "ListBox" & (I + 1)
+        
+        ' Überprüfen, ob die ListBox existiert, bevor der Eintrag hinzugefügt wird
+        On Error Resume Next
+        If formName = "Verwaltung" Then
+            If Not Verwaltung.Controls(listBoxName) Is Nothing Then
+                Verwaltung.Controls(listBoxName).AddItem listBoxItems(I)
+            End If
+        ElseIf formName = "Dispoerstellen" Then
+            If Not Dispoerstellen.Controls(listBoxName) Is Nothing Then
+                Dispoerstellen.Controls(listBoxName).AddItem listBoxItems(I)
+            End If
+        End If
+        On Error GoTo 0
+        
+        ' Kurze Pause, um die UI reaktionsfähig zu halten
+        DoEvents
+    Next I
+End Sub
+
+Public Function GetNewestPdfFileUsingDir(folderPath As String) As String
+    On Error GoTo ErrorHandler
+    
+    Dim fileName As String
+    Dim fileDate As Date
+    Dim latestDate As Date
+    Dim newestFile As String
+    
+    latestDate = 0
+    newestFile = ""
+    
+    ' Verwende Dir, um durch die Dateien zu schleifen
+    fileName = Dir(folderPath & "\*.pdf")
+    
+    Do While fileName <> ""
+        fileDate = FileDateTime(folderPath & "\" & fileName)
+        If fileDate > latestDate Then
+            latestDate = fileDate
+            newestFile = fileName
+        End If
+        fileName = Dir
+    Loop
+    
+    GetNewestPdfFileUsingDir = newestFile
+    Exit Function
+    
+ErrorHandler:
+    GetNewestPdfFileUsingDir = ""
+End Function
+
+' Funktion zum Speichern des ToggleButton-Status für Verwaltung
+Public Sub SaveToggleButtonStateVerwaltung()
+    Dim ws As Worksheet
+    Set ws = ThisWorkbook.Sheets("Settings")
+    
+    ' Status des ToggleButtons speichern
+    ws.Range("A1").Value = Verwaltung.ToggleButton1.Value
+End Sub
+
+' Funktion zum Laden des ToggleButton-Status für Verwaltung
+Public Sub LoadToggleButtonStateVerwaltung()
+    Dim ws As Worksheet
+    Set ws = ThisWorkbook.Sheets("Settings")
+    
+    ' Überprüfen, ob der gespeicherte Wert vorhanden ist
+    If IsEmpty(ws.Range("A1").Value) Then
+        Verwaltung.ToggleButton1.Value = False ' Standardwert
+    Else
+        Verwaltung.ToggleButton1.Value = ws.Range("A1").Value
+    End If
+End Sub
+
+' Funktion zum Speichern des ToggleButton-Status für Dispoerstellen
+Public Sub SaveToggleButtonStateDispo()
+    Dim ws As Worksheet
+    Set ws = ThisWorkbook.Sheets("Settings")
+    
+    ' Status des ToggleButtons speichern
+    ws.Range("A2").Value = Dispoerstellen.ToggleButton1.Value
+End Sub
+
+' Funktion zum Laden des ToggleButton-Status für Dispoerstellen
+Public Sub LoadToggleButtonStateDispo()
+    Dim ws As Worksheet
+    Set ws = ThisWorkbook.Sheets("Settings")
+    
+    ' Überprüfen, ob der gespeicherte Wert vorhanden ist
+    If IsEmpty(ws.Range("A2").Value) Then
+        Dispoerstellen.ToggleButton1.Value = False ' Standardwert
+    Else
+        Dispoerstellen.ToggleButton1.Value = ws.Range("A2").Value
+    End If
+End Sub
+
+End Module
