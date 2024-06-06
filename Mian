@@ -1,8 +1,4 @@
-Sub StartPdfSearchDispoerstellen()
-    Call ProcessUserFormDispoerstellen("Dispoerstellen")
-End Sub
-
-Sub ProcessUserFormDispoerstellen(formName As String)
+Sub StartPdfSearch()
     Dim baseFolderPath As String
     Dim subFolderNames() As String
     Dim subFolderName As String
@@ -13,7 +9,7 @@ Sub ProcessUserFormDispoerstellen(formName As String)
     Dim listBoxName As String
     
     ' Initialisierung
-    baseFolderPath = "C:/Pool 2024\" ' Basisordner angeben
+    baseFolderPath = "C:/\Pool 2024\" ' Basisordner angeben
     subFolderNames = Split("01 Januar,02 Februar,03 März,04 April,05 Mai,06 Juni,07 Juli,08 August,09 September,10 Oktober,11 November,12 Dezember", ",")
     
     ' Initialisiere das Array für die ListBox-Einträge
@@ -39,8 +35,8 @@ Sub ProcessUserFormDispoerstellen(formName As String)
         
         ' Überprüfen, ob die ListBox existiert, bevor der Eintrag hinzugefügt wird
         On Error Resume Next
-        If Not UserForms(formName).Controls(listBoxName) Is Nothing Then
-            UserForms(formName).Controls(listBoxName).AddItem listBoxItems(I)
+        If Not verwaltung.Controls(listBoxName) Is Nothing Then
+            verwaltung.Controls(listBoxName).AddItem listBoxItems(I)
         End If
         On Error GoTo 0
         
@@ -80,7 +76,7 @@ ErrorHandler:
 End Function
 
 ' Funktion zum Speichern des ToggleButton-Status
-Sub SaveToggleButtonStateDispoerstellen()
+Sub SaveToggleButtonState()
     Dim ws As Worksheet
     On Error Resume Next
     Set ws = ThisWorkbook.Sheets("Settings")
@@ -93,11 +89,11 @@ Sub SaveToggleButtonStateDispoerstellen()
     End If
     
     ' Status des ToggleButtons speichern
-    ws.Range("A2").Value = Dispoerstellen.ToggleButton1.Value
+    ws.Range("A1").Value = verwaltung.ToggleButton1.Value
 End Sub
 
 ' Funktion zum Laden des ToggleButton-Status
-Sub LoadToggleButtonStateDispoerstellen()
+Sub LoadToggleButtonState()
     Dim ws As Worksheet
     On Error Resume Next
     Set ws = ThisWorkbook.Sheets("Settings")
@@ -105,12 +101,13 @@ Sub LoadToggleButtonStateDispoerstellen()
     
     ' Überprüfen, ob das Arbeitsblatt existiert und der gespeicherte Wert vorhanden ist
     If Not ws Is Nothing Then
-        If IsEmpty(ws.Range("A2").Value) Then
-            Dispoerstellen.ToggleButton1.Value = False ' Standardwert
+        If IsEmpty(ws.Range("A1").Value) Then
+            verwaltung.ToggleButton1.Value = False ' Standardwert
         Else
-            Dispoerstellen.ToggleButton1.Value = ws.Range("A2").Value
+            verwaltung.ToggleButton1.Value = ws.Range("A1").Value
         End If
     Else
-        Dispoerstellen.ToggleButton1.Value = False ' Standardwert, falls das Blatt nicht existiert
+        verwaltung.ToggleButton1.Value = False ' Standardwert, falls das Blatt nicht existiert
     End If
 End Sub
+
