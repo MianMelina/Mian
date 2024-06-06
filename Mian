@@ -1,16 +1,1 @@
-Private Sub UserForm_Initialize()
-    Dim i As Integer
-    For i = 1 To 12
-        Call SyncListBox(Me.Controls("ListBox" & i), Verwaltung.Controls("ListBox" & i))
-    Next i
-End Sub
 
-Sub SyncListBox(destListBox As MSForms.ListBox, srcListBox As MSForms.ListBox)
-    Dim i As Integer
-    ' Löschen Sie den Inhalt der Ziel-ListBox
-    destListBox.Clear
-    ' Kopieren Sie den Inhalt der Quell-ListBox in die Ziel-ListBox
-    For i = 0 To srcListBox.ListCount - 1
-        destListBox.AddItem srcListBox.List(i)
-    Next i
-End Sub
