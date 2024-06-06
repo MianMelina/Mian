@@ -1,1 +1,195 @@
 
+Private Sub schliessen_dispo_Click()
+    Unload Me
+End Sub
+
+Private Sub cancel_Click()
+    Unload Me
+End Sub
+
+Private Sub Datum1_Change()
+    Dim myDate As String
+    myDate = Datum1.Value
+    If Len(myDate) = 2 And Not myDate Like "*.*" Then
+        myDate = myDate & "."
+        Datum1.Value = myDate
+    ElseIf Len(myDate) = 5 And Not myDate Like "*.*.*" Then
+        myDate = myDate & "."
+        Datum1.Value = myDate
+    End If
+End Sub
+
+Private Sub Datum2_Change()
+    Dim myDate As String
+    myDate = Datum2.Value
+    If Len(myDate) = 2 And Not myDate Like "*.*" Then
+        myDate = myDate & "."
+        Datum2.Value = myDate
+    ElseIf Len(myDate) = 5 And Not myDate Like "*.*.*" Then
+        myDate = myDate & "."
+        Datum2.Value = myDate
+    End If
+End Sub
+
+Private Sub dispoerstellen_Click()
+Dim pdfDateiName As String
+Dim pdfname As Variant
+Dim str_pfad As String
+
+str_pfad = "C:/Pool2024"     ' Pfad wo Dispo speichern soll
+
+pdfDateiName = ActiveSheet.Range("Dispo") ' Dateiname nimmt Inhalt vom Zellenbezug, in diesem Fall hab ich die Zelle Dispo statt ursprünglich X15 genannt
+pdfname = Application.GetSaveAsFilename(InitialFileName:=str_pfad & pdfDateiName, FileFilter:="PDF files, *.pdf", Title:="PDF speichern")
+If pdfname <> False Then
+ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, fileName:=pdfDateiName, _
+Quality:=xlQualityStandard, IncludeDocProperties:=False, IgnorePrintAreas:=False, OpenAfterPublish:=True
+Else
+Exit Sub
+End If
+End Sub
+
+
+Private Sub erste_Click()
+    Range("F5").Value = "1./LogBtl 161"
+End Sub
+
+Private Sub dritte_Click()
+    Range("F5").Value = "3./LogBtl 161"
+End Sub
+
+Private Sub fuenfte_Click()
+    Range("F5").Value = "5./LogBtl 161"
+End Sub
+
+Private Sub achte_Click()
+    Range("F5").Value = "8./LogBtl 161"
+End Sub
+
+Private Sub lfdnr_Change()
+If Len(lfdnr.Text) = 6 Then
+        lfdnr.Text = Left(lfdnr.Text, 2) & "-" & Mid(lfdnr.Text, 3, 2) & "-" & Right(lfdnr.Text, 2)
+    End If
+
+End Sub
+
+
+
+
+Private Sub Uhrzeit1_Change()
+    Dim myTime As String
+    myTime = Uhrzeit1.Value
+    If Len(myTime) = 2 And Not myTime Like "*:*" Then
+        myTime = myTime & ":"
+        Uhrzeit1.Value = myTime
+    End If
+End Sub
+    
+Private Sub Uhrzeit2_Change()
+    Dim myTime As String
+    myTime = Uhrzeit2.Value
+    If Len(myTime) = 2 And Not myTime Like "*:*" Then
+        myTime = myTime & ":"
+        Uhrzeit2.Value = myTime
+    End If
+End Sub
+
+Private Sub UserForm_Initialize()
+    ' Initialisierung der UserForm ohne Verzögerung
+    Me.Caption = ""
+    
+    ' Status des ToggleButtons laden
+    LoadToggleButtonState
+    
+    ' Überprüfen, ob der ToggleButton aktiviert ist
+    If Not Me.ToggleButton1.Value Then
+        ' Timer starten, um die PDF-Suche nach dem Öffnen zu beginnen
+        Application.OnTime Now + TimeValue("00:00:01"), "StartPdfSearch"
+    End If
+End Sub
+
+Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
+    ' Status des ToggleButtons speichern, wenn die UserForm geschlossen wird
+    SaveToggleButtonState
+End Sub
+
+Private Sub ToggleButton1_Click()
+    ' Wenn der ToggleButton geändert wird, den Status speichern
+    SaveToggleButtonState
+    
+    ' Überprüfen, ob der ToggleButton aktiviert oder deaktiviert wurde
+    If Me.ToggleButton1.Value Then
+        ' PDF-Suche deaktiviert
+    Else
+        ' PDF-Suche aktiviert
+        StartPdfSearch
+    End If
+End Sub
+
+Private Sub neunte_Click()
+    Range("F5").Value = "9./LogBtl 161"
+End Sub
+
+Private Sub logbtl163_Click()
+    Range("F5").Value = "LogBtl 163"
+End Sub
+
+Private Sub logststelle_Click()
+    Range("F5").Value = "LogStStelle"
+End Sub
+Private Sub kaz_Click()
+    Range("F5").Value = "KAZ Delmenhorst"
+End Sub
+
+Private Sub siebte_Click()
+    Range("F5").Value = "7./LogBtl 161"
+End Sub
+
+Private Sub stzg_Click()
+    Range("F5").Value = "LogBtl 161"
+End Sub
+
+Private Sub TextBox1_Change()
+    Worksheets("Dispoerstellen").Range("F5").Value = Dispo.TextBox1.Value
+End Sub
+
+Private Sub uebernehmen_Click()
+    'Textinhalt aus der Userform in die Zellen schreiben
+    Worksheets("Dispotool").Range("C30").Value = dispotool.KfzArt1.Value
+    Worksheets("Dispotool").Range("C31").Value = dispotool.KfzArt2.Value
+    Worksheets("Dispotool").Range("C32").Value = dispotool.KfzArt3.Value
+    Worksheets("Dispotool").Range("C33").Value = dispotool.KfzArt4.Value
+    Worksheets("Dispotool").Range("C34").Value = dispotool.KfzArt5.Value
+    Worksheets("Dispotool").Range("C35").Value = dispotool.KfzArt6.Value
+    Worksheets("Dispotool").Range("P30").Value = dispotool.Kennzeichen1.Value
+    Worksheets("Dispotool").Range("P31").Value = dispotool.Kennzeichen2.Value
+    Worksheets("Dispotool").Range("P32").Value = dispotool.Kennzeichen3.Value
+    Worksheets("Dispotool").Range("P33").Value = dispotool.Kennzeichen4.Value
+    Worksheets("Dispotool").Range("P34").Value = dispotool.Kennzeichen5.Value
+    Worksheets("Dispotool").Range("P35").Value = dispotool.Kennzeichen6.Value
+    Worksheets("Dispotool").Range("F23").Value = dispotool.Datum1.Value
+    Worksheets("Dispotool").Range("Q23").Value = dispotool.Datum2.Value
+    Worksheets("Dispotool").Range("K23").Value = dispotool.Uhrzeit1.Value
+    Worksheets("Dispotool").Range("V23").Value = dispotool.Uhrzeit2.Value
+    Worksheets("Dispotool").Range("Dispo").Value = dispotool.lfdnr.Value
+End Sub
+
+Private Sub vierte_Click()
+    Range("F5").Value = "4./LogBtl 161"
+End Sub
+
+Private Sub zweite_Click()
+    Range("F5").Value = "2./LogBtl 161"
+End Sub
+
+Private Sub UserForm_Activate()
+    With Me
+        .StartUpPosition = 0
+        .Left = Application.Left + (0.5 * Application.Width) - (0.5 * .Width)
+        .Top = Application.Top + (0.5 * Application.Height) - (0.5 * .Height)
+    End With
+    
+    If ActiveSheet.ProtectContents Then
+        MsgBox "Die UserForm ist bei aktiviertem Blattschutz deaktiviert.", vbInformation
+        Unload Me ' Schließt die UserForm
+    End If
+End Sub
