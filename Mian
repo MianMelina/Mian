@@ -1,16 +1,1 @@
-Private Sub dispoerstellen_Click()
-    Dim pdfDateiName As String
-    Dim pdfname As Variant
-    Dim str_pfad As String
 
-    str_pfad = "C:/Pool 2024\" ' Pfad wo Dispo speichern soll
-
-    pdfDateiName = ActiveSheet.Range("Dispo").Value ' Dateiname nimmt Inhalt vom Zellenbezug, in diesem Fall hab ich die Zelle Dispo statt ursprünglich X15 genannt
-    pdfname = Application.GetSaveAsFilename(InitialFileName:=str_pfad & pdfDateiName, FileFilter:="PDF files, *.pdf", Title:="PDF speichern")
-    If pdfname <> False Then
-        ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, fileName:=pdfDateiName, _
-        Quality:=xlQualityStandard, IncludeDocProperties:=False, IgnorePrintAreas:=False, OpenAfterPublish:=True
-    Else
-        Exit Sub
-    End If
-End Sub
