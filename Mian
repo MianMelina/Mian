@@ -1,9 +1,8 @@
-Sub StartPdfSearch()
-    Call ProcessUserForm("verwaltung")
-    Call ProcessUserForm("Dispoerstellen")
+Sub StartPdfSearchDispoerstellen()
+    Call ProcessUserFormDispoerstellen("Dispoerstellen")
 End Sub
 
-Sub ProcessUserForm(formName As String)
+Sub ProcessUserFormDispoerstellen(formName As String)
     Dim baseFolderPath As String
     Dim subFolderNames() As String
     Dim subFolderName As String
@@ -81,7 +80,7 @@ ErrorHandler:
 End Function
 
 ' Funktion zum Speichern des ToggleButton-Status
-Sub SaveToggleButtonState()
+Sub SaveToggleButtonStateDispoerstellen()
     Dim ws As Worksheet
     On Error Resume Next
     Set ws = ThisWorkbook.Sheets("Settings")
@@ -94,12 +93,11 @@ Sub SaveToggleButtonState()
     End If
     
     ' Status des ToggleButtons speichern
-    ws.Range("A1").Value = verwaltung.ToggleButton1.Value
     ws.Range("A2").Value = Dispoerstellen.ToggleButton1.Value
 End Sub
 
 ' Funktion zum Laden des ToggleButton-Status
-Sub LoadToggleButtonState()
+Sub LoadToggleButtonStateDispoerstellen()
     Dim ws As Worksheet
     On Error Resume Next
     Set ws = ThisWorkbook.Sheets("Settings")
@@ -107,19 +105,12 @@ Sub LoadToggleButtonState()
     
     ' Überprüfen, ob das Arbeitsblatt existiert und der gespeicherte Wert vorhanden ist
     If Not ws Is Nothing Then
-        If IsEmpty(ws.Range("A1").Value) Then
-            verwaltung.ToggleButton1.Value = False ' Standardwert
-        Else
-            verwaltung.ToggleButton1.Value = ws.Range("A1").Value
-        End If
-        
         If IsEmpty(ws.Range("A2").Value) Then
             Dispoerstellen.ToggleButton1.Value = False ' Standardwert
         Else
             Dispoerstellen.ToggleButton1.Value = ws.Range("A2").Value
         End If
     Else
-        verwaltung.ToggleButton1.Value = False ' Standardwert, falls das Blatt nicht existiert
         Dispoerstellen.ToggleButton1.Value = False ' Standardwert, falls das Blatt nicht existiert
     End If
 End Sub
