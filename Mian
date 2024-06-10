@@ -1,1 +1,26 @@
+Private Sub UserForm_Initialize()
+    Dim Handle As Long
+    Dim Stil As Long
 
+    ' Handle für das Fenster des UserForms finden
+    Handle = FindWindowA(vbNullString, Me.Caption)
+
+    ' Stil setzen
+    Stil = Stil Or &H55000000
+    Call SetWindowLongA(Handle, -16, Stil)
+
+    With ComboBox1
+        ' Optionen hinzufügen
+        .AddItem "StZg GeZi"
+        .AddItem "1./Techzg"
+        .AddItem "2./TechnTrp"
+        .AddItem "3./TechnTip"
+        .AddItem "4./TechnTrp"
+        .AddItem "5./TIspLeit & 8./"
+        .AddItem "7./TechnTtp"
+        .AddItem "9./TechnTrp"
+
+        ' Standardauswahl festlegen
+        .Value = .List(0)
+    End With
+End Sub
