@@ -1,1 +1,64 @@
+Dim img As Shape
+Dim ws As Worksheet
+Dim xPos As Double
+Dim yPos As Double
+Dim xDirection As Double
+Dim yDirection As Double
 
+Sub StartAnimation()
+    Set ws = ThisWorkbook.Sheets("Fahrzeugübersicht")
+    
+    ' Bild einfügen
+    Set img = ws.Shapes.AddPicture("C:\Test\deinBild.png", _
+                                   msoFalse, msoCTrue, 100, 100, 100, 100)
+    
+    ' Startposition und Bewegungsrichtung festlegen
+    xPos = img.Left
+    yPos = img.Top
+    xDirection = 1
+    yDirection = 1
+    
+    ' Animation starten
+    Application.OnTime Now + TimeValue("00:00:01"), "AnimateImage"
+End Sub
+
+Sub AnimateImage()
+    ' Bildschirmaktualisierung deaktivieren für flüssigere Animation
+    Application.ScreenUpdating = False
+    
+    ' Bildbewegung berechnen
+    xPos = xPos + (Rnd() - 0.5) * 20 * xDirection
+    yPos = yPos + (Rnd() - 0.5) * 20 * yDirection
+    
+    ' Begrenzungen des Arbeitsblatts überprüfen und Richtung ändern, falls notwendig
+    If xPos < 0 Then
+        xPos = 0
+        xDirection = -xDirection
+    ElseIf xPos > ws.UsedRange.Width - img.Width Then
+        xPos = ws.UsedRange.Width - img.Width
+        xDirection = -xDirection
+    End If
+    
+    If yPos < 0 Then
+        yPos = 0
+        yDirection = -yDirection
+    ElseIf yPos > ws.UsedRange.Height - img.Height Then
+        yPos = ws.UsedRange.Height - img.Height
+        yDirection = -yDirection
+    End If
+    
+    ' Bild an neue Position setzen
+    img.Left = xPos
+    img.Top = yPos
+    
+    ' Bildschirmaktualisierung aktivieren
+    Application.ScreenUpdating = True
+    
+    ' Animation fortsetzen
+    Application.OnTime Now + TimeValue("00:00:01"), "AnimateImage"
+End Sub
+
+Sub StopAnimation()
+    On Error Resume Next
+    Application.OnTime Now + TimeValue("00:00:01"), "AnimateImage", , False
+End Sub
