@@ -1,1 +1,30 @@
-
+Private Sub TextBox1_Change()
+    Dim ws As Worksheet
+    Dim lastRow As Long
+    Dim i As Long
+    Dim kennzeichen As String
+    
+    ' Setze das Arbeitsblatt
+    Set ws = ThisWorkbook.Sheets("Fahrzeuge")
+    
+    ' Letzte benutzte Zeile in Spalte A bestimmen
+    lastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row
+    
+    ' Leere die ListBoxen
+    ListBox1.Clear
+    ListBox2.Clear
+    ListBox3.Clear
+    
+    ' Eingabe aus TextBox1 lesen
+    kennzeichen = TextBox1.Text
+    
+    ' Suche nach dem Kennzeichen in Spalte A bis J
+    For i = 3 To lastRow
+        If ws.Cells(i, 1).Value = kennzeichen Then
+            ' Werte in die ListBoxen einfügen
+            ListBox1.AddItem ws.Cells(i, 4).Value ' Einheit
+            ListBox2.AddItem ws.Cells(i, 3).Value ' Wert aus Spalte C
+            ListBox3.AddItem ws.Cells(i, 2).Value ' Wert aus Spalte B
+        End If
+    Next i
+End Sub
