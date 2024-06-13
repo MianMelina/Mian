@@ -1,1 +1,5 @@
-
+Private Sub Workbook_Open()
+    Dim todayDate As String
+    todayDate = Format(Date, "dd-mm-yyyy")
+    MsgBox "Today's date is " & todayDate, vbInformation, "Current Date"
+End Sub
