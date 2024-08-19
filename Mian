@@ -3,7 +3,7 @@ Private Sub Workbook_Open()
     Dim ws As Worksheet
     Dim cell As Range
     Dim TodayDate As Date
-    Dim LastCell As Range
+    Dim LastRange As Range
 
     ' Festlegen des aktuellen Arbeitsblatts (falls mehrere vorhanden)
     Set ws = ThisWorkbook.Sheets("Tabelle1") ' Ersetze "Tabelle1" durch den Namen deines Blattes
@@ -11,18 +11,18 @@ Private Sub Workbook_Open()
     ' Aktuelles Datum
     TodayDate = Date
     
-    ' Entfernen der vorherigen Markierung
-    Set LastCell = ws.Cells(1, 1).Resize(30, 1)
-    LastCell.Interior.ColorIndex = xlNone
+    ' Entfernen der vorherigen Markierung (von Spalte A bis AC)
+    Set LastRange = ws.Range("A1:AC30")
+    LastRange.Interior.ColorIndex = xlNone
     
     ' Durchlaufen der Zellen in Spalte A (von A1 bis A366)
     For Each cell In ws.Range("A1:A366")
         If cell.Value = TodayDate Then
-            ' Markierung der Zellen von A1 bis A30 in grün
-            ws.Range(cell.Offset(0, 0), cell.Offset(29, 0)).Interior.Color = RGB(144, 238, 144) ' Hellgrün
+            ' Markierung der Zellen von A bis AC in grün (z.B. von A2 bis AC31)
+            ws.Range(cell.Offset(0, 0), cell.Offset(29, 28)).Interior.Color = RGB(144, 238, 144) ' Hellgrün
         Else
-            ' Alle anderen Zellen auf Standardfarbe zurücksetzen
-            ws.Range(cell.Offset(0, 0), cell.Offset(29, 0)).Interior.ColorIndex = xlNone
+            ' Alle anderen Zellen auf Standardfarbe zurücksetzen (optional, falls erforderlich)
+            ws.Range(cell.Offset(0, 0), cell.Offset(29, 28)).Interior.ColorIndex = xlNone
         End If
     Next cell
 
